@@ -54,8 +54,7 @@ public class UserController {
         user.setName(name);
         user.setEmail(email);
         user.setPassword(password);
-        userRepo.save(user);
-        return ResponseEntity.ok("User registered successfully");
+       return userService.addUser(user);
     }
 
 }
