@@ -15,13 +15,30 @@ public class UserService {
     @Autowired
     private UserRepo userRepo;
 
+    //new user registration
     public ResponseEntity<?> addUser(Users user) {
         Optional<Users> existingUser = userRepo.findByEmail(user.getEmail());
         if (existingUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Email already registered");
+                    .body("Email already registered - "+user.getEmail());
         }
         userRepo.save(user);
-        return ResponseEntity.ok(" Registered Successfully");
+        return ResponseEntity.ok("User Registered Successfully - "+ user.getName());
+    }
+
+
+    //User Login
+    public ResponseEntity<?> signin(String email, String password) {
+        Optional<Users> existingUser = userRepo.findByEmail(email);
+        if (existingUser.isPresent()) {
+            Users user = existingUser.get();
+            if (user.getPassword().equals(password)) {
+                return ResponseEntity.ok("User Signed In Successfully - "+ user.getName());
+            }else{
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
+            }
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Not Found - "+ email );
+        }
     }
 }

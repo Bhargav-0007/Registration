@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -22,29 +23,28 @@ public class UserController {
     UserService userService;
     private static final Pattern EMAIL_REGEX =
             Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
-    @Autowired
-    private UserRepo userRepo;
 
+    //new User Registration
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Map<String, String> userData) {
-        List<String> errors = new ArrayList<>();
+        Map<String, String> errors = new HashMap<>();
 
         String name = userData.get("name");
         String email = userData.get("email");
         String password = userData.get("password");
 
         if (name == null || name.isEmpty()) {
-            errors.add("name: Name is required");
+            errors.put("name", "required");
         }
 
         if (email == null || email.isEmpty()) {
-            errors.add("email: Email is required");
+            errors.put("email", "required");
         } else if (!EMAIL_REGEX.matcher(email).matches()) {
-            errors.add("email: Email is not valid");
+            errors.put("email", "Email is not valid");
         }
 
         if (password == null || password.isEmpty()) {
-            errors.add("password: Password is required");
+            errors.put("password", "required");
         }
 
         if (!errors.isEmpty()) {
@@ -56,5 +56,26 @@ public class UserController {
         user.setPassword(password);
        return userService.addUser(user);
     }
+
+    //User Login
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> userLogin) {
+        String email = userLogin.get("email");
+        String password = userLogin.get("password");
+        Map<String, String> errors = new HashMap<>();
+        if (email == null || email.trim().isEmpty()) {
+            errors.put("email", "Email is required");
+        }
+        if (password == null || password.trim().isEmpty()) {
+            errors.put("password", "Password is required");
+        }
+
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        return userService.signin(email, password);
+    }
+
 
 }
