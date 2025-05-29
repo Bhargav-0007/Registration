@@ -63,10 +63,10 @@ public class UserController {
         String email = userLogin.get("email");
         String password = userLogin.get("password");
         Map<String, String> errors = new HashMap<>();
-        if (email == null || email.trim().isEmpty()) {
+        if (email == null || email.isEmpty()) {
             errors.put("email", "Email is required");
         }
-        if (password == null || password.trim().isEmpty()) {
+        if (password == null || password.isEmpty()) {
             errors.put("password", "Password is required");
         }
 
