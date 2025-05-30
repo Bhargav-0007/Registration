@@ -1,7 +1,6 @@
 package com.billspltr.Controller;
 
 import com.billspltr.Entity.Users;
-import com.billspltr.Repo.UserRepo;
 import com.billspltr.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,14 +9,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api")
 public class UserController {
     @Autowired
     UserService userService;
@@ -25,7 +22,7 @@ public class UserController {
             Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
 
     //new User Registration
-    @PostMapping("/register")
+    @PostMapping("/users/register")
     public ResponseEntity<?> register(@RequestBody Map<String, String> userData) {
         Map<String, String> errors = new HashMap<>();
 
@@ -58,7 +55,7 @@ public class UserController {
     }
 
     //User Login
-    @PostMapping("/login")
+    @PostMapping("/users/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> userLogin) {
         String email = userLogin.get("email");
         String password = userLogin.get("password");
