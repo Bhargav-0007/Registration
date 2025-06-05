@@ -93,8 +93,13 @@ public class UserController {
     //user logout
     @PostMapping("/users/logout")
     public ResponseEntity<?> logout(HttpSession session) {
-        session.invalidate();
-        return ResponseEntity.ok("User logged out successfully");
+        Users user = (Users) session.getAttribute("loggedInUser");
+        if (user != null) {
+            session.invalidate();
+            return ResponseEntity.ok("User logged out successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No user is logged in currently");
+        }
     }
 
 
