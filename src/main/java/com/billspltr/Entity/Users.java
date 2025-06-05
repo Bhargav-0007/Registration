@@ -1,9 +1,6 @@
 package com.billspltr.Entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table
@@ -12,11 +9,8 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @NotBlank
     private String name;
-    @Email
     private String email;
-    @NotBlank
     private String password;
 
     public Users(int id, String name, String email, String password) {

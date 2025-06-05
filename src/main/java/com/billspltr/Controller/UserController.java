@@ -2,13 +2,14 @@ package com.billspltr.Controller;
 
 import com.billspltr.Entity.Users;
 import com.billspltr.Service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -56,7 +57,15 @@ public class UserController {
 
     //User Login
     @PostMapping("/users/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> userLogin) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> userLogin, HttpSession session) {
+        // Check if user is already logged in
+        Users existingUser = (Users) session.getAttribute("loggedInUser");
+        if (existingUser != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("User already logged in as " + existingUser.getEmail());
+        }
+
+        // Validate input
         String email = userLogin.get("email");
         String password = userLogin.get("password");
         Map<String, String> errors = new HashMap<>();
@@ -71,7 +80,21 @@ public class UserController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        return userService.signin(email, password);
+        // Proceed with login
+        ResponseEntity<?> response = userService.signin(email, password);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            session.setAttribute("loggedInUser", (Users) response.getBody());
+        }
+
+        return response;
+    }
+
+
+    //user logout
+    @PostMapping("/users/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        session.invalidate();
+        return ResponseEntity.ok("User logged out successfully");
     }
 
 

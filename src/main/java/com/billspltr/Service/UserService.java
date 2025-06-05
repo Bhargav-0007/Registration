@@ -33,7 +33,7 @@ public class UserService {
         if (existingUser.isPresent()) {
             Users user = existingUser.get();
             if (user.getPassword().equals(password)) {
-                return ResponseEntity.ok("User Signed In Successfully - "+ user.getName());
+                return ResponseEntity.ok(user);
             }else{
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
             }
