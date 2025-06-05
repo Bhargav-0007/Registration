@@ -31,11 +31,11 @@ public class GroupController {
             String groupName = groupData.get("groupName");
             String description = groupData.get("description");
 
-            if (groupName == null || groupName.trim().isEmpty()) {
+            if (groupName == null || groupName.isEmpty()) {
                 errors.put("groupName", "Group name is required");
             }
 
-            if (description == null || description.trim().isEmpty()) {
+            if (description == null || description.isEmpty()) {
                 errors.put("description", "Description is required");
             }
 
