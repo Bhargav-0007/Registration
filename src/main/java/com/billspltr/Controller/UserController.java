@@ -80,7 +80,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        // Proceed with login
+        // login
         ResponseEntity<?> response = userService.signin(email, password);
         if (response.getStatusCode().is2xxSuccessful()) {
             session.setAttribute("loggedInUser", (Users) response.getBody());
